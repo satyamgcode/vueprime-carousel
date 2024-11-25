@@ -1,6 +1,13 @@
 <template>
   <div class="mx-auto">
     <div class="tabs flex justify-center gap-4 mb-4 mt-4" >
+            <button
+        :class="['tab-button px-4 py-2 rounded-lg', activeTab === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-200']"
+        @click="setActiveTab('all')"
+      >
+        All Images
+      </button>
+
       <button
         :class="['tab-button px-4 py-2 rounded-lg', activeTab === 'first10' ? 'bg-blue-500 text-white' : 'bg-gray-200']"
         @click="setActiveTab('first10')"
@@ -116,9 +123,12 @@ const filteredItems = computed(() => {
     return items.value.slice(0, 10);
   } else if (activeTab.value === 'next10') {
     return items.value.slice(10);
+  } else if (activeTab.value === 'all') {
+    return items.value; // Return all items
   }
   return [];
 });
+
 
 // Function to switch tabs and reset the carousel
 const setActiveTab = (tab) => {
