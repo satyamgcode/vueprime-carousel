@@ -3,7 +3,7 @@
     <h2 class="text-xl font-semibold mb-6">Image carousel</h2>
     <div class="mb-4 text-center">
       <p>click to see demo code</p>
-      <a href="../src/assets/demo.pdf" class="text-blue-500 underline">Demo code</a>
+      <a href="/demo_code.docx" class="text-blue-500 underline">Demo code</a>
     </div>
 
     <div class="tabs flex justify-center gap-4 mb-8">
