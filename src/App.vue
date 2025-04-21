@@ -1,21 +1,24 @@
 <template>
-  <div class="mx-auto">
-    <div class="tabs flex justify-center gap-4 mb-4 mt-4" >
-            <button
-        :class="['tab-button px-4 py-2 rounded-lg', activeTab === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-200']"
+  <div class="p-6 bg-[#E5F6F3] min-h-screen rounded-3xl">
+    <h2 class="text-xl font-semibold mb-6">Image carousel</h2>
+
+    <div class="tabs flex justify-center gap-4 mb-8">
+      <button
+        :class="['tab-button px-4 py-2 rounded-lg font-medium', activeTab === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-200']"
         @click="setActiveTab('all')"
       >
         All Images
       </button>
 
       <button
-        :class="['tab-button px-4 py-2 rounded-lg', activeTab === 'first10' ? 'bg-blue-500 text-white' : 'bg-gray-200']"
+        :class="['tab-button px-4 py-2 rounded-lg font-medium', activeTab === 'first10' ? 'bg-blue-500 text-white' : 'bg-gray-200']"
         @click="setActiveTab('first10')"
       >
-        First 10 Image
+        First 10 Images
       </button>
+
       <button
-        :class="['tab-button px-4 py-2 rounded-lg', activeTab === 'next10' ? 'bg-blue-500 text-white' : 'bg-gray-200']"
+        :class="['tab-button px-4 py-2 rounded-lg font-medium', activeTab === 'next10' ? 'bg-blue-500 text-white' : 'bg-gray-200']"
         @click="setActiveTab('next10')"
       >
         Next 10 Images
@@ -23,123 +26,142 @@
     </div>
 
     <!-- Carousel -->
-    <Carousel
-      :value="filteredItems"
-      :responsiveOptions="responsiveOptions"
-      :numVisible="5"
-      :numScroll="1"
-      :circular="false"
-      style="max-width:80vw; width: 80vw; margin: 0 auto;"
-      :show-indicators="false"
-      ref="carouselRef"
-      :key="carouselKey"
-    >
-      <template #item="slotProps">
-        <div class="p-4">
-          <div
-            class="carousel-slide border border-surface-200 dark:border-surface-700 rounded-xl p-4 cursor-pointer"
-          >
-            <img
-              :src="slotProps.data.image"
-              :alt="'Image ' + slotProps.index"
-              class="carousel-image w-full h-auto object-cover rounded-lg max-h-[300px]"
-              @click="selectCover(slotProps.data.title)"
-            />
-            <p>
-              {{ slotProps.data.title }}
-            </p>
+    <div class="relative">
+      <Carousel
+        :value="filteredItems"
+        :responsiveOptions="responsiveOptions"
+        :numVisible="3"
+        :numScroll="1"
+        :circular="false"
+        :showIndicators="false"
+        style="width: 80vw; margin: 0 auto;"
+        ref="carouselRef"
+        :key="carouselKey"
+        class="custom-carousel"
+      >
+        <template #item="slotProps">
+          <div class="p-3">
+            <div class="border rounded-xl shadow-md overflow-hidden bg-white">
+              <img
+                :src="slotProps.data.image"
+                :alt="'Image ' + slotProps.index"
+                class="w-full h-[200px] object-cover"
+              />
+              <div class="p-4">
+                <h3 class="font-bold mb-2">Titel</h3>
+                <p class="text-gray-700">Hier kan de beschrijving komen</p>
+              </div>
+            </div>
           </div>
+        </template>
+      </Carousel>
+
+      <!-- Custom Pagination -->
+      <div class="flex justify-center items-center gap-4 mt-8">
+        <button @click="prev" class="text-orange-500 text-2xl">
+          <i class="pi pi-angle-left"></i>
+        </button>
+        <div class="text-lg">
+          <!-- <span class="font-bold">{{ currentPage }}</span> <span class="font-bold">{{ totalPages }}</span> -->
         </div>
-      </template>
-    </Carousel>
+        <button @click="next" class="text-orange-500 text-2xl">
+          <i class="pi pi-angle-right"></i>
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, nextTick } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import Carousel from 'primevue/carousel';
+import 'primeicons/primeicons.css';
 import image from './assets/images/check.jpg';
 
-const items = ref([
-  { image: image, title: 'Image 1' },
-  { image: image, title: 'Image 2' },
-  { image: image, title: 'Image 3' },
-  { image: image, title: 'Image 4' },
-  { image: image, title: 'Image 5' },
-  { image: image, title: 'Image 6' },
-  { image: image, title: 'Image 7' },
-  { image: image, title: 'Image 8' },
-  { image: image, title: 'Image 9' },
-  { image: image, title: 'Image 10' },
-  { image: image, title: 'Image 11' },
-  { image: image, title: 'Image 12' },
-  { image: image, title: 'Image 13' },
-  { image: image, title: 'Image 14' },
-  { image: image, title: 'Image 15' },
-  { image: image, title: 'Image 16' },
-  { image: image, title: 'Image 17' },
-  { image: image, title: 'Image 18' },
-  { image: image, title: 'Image 19' },
-  { image: image, title: 'Image 20' },
-]);
-
-const responsiveOptions = ref([
-  {
-    breakpoint: '1400px',
-    numVisible: 5,
-    numScroll: 1,
-  },
-  {
-    breakpoint: '1199px',
-    numVisible: 4,
-    numScroll: 1,
-  },
-  {
-    breakpoint: '991px',
-    numVisible: 3,
-    numScroll: 1,
-  },
-  {
-    breakpoint: '767px',
-    numVisible: 2,
-    numScroll: 1,
-  },
-  {
-    breakpoint: '575px',
-    numVisible: 1,
-    numScroll: 1,
-  },
-]);
+const items = ref(
+  Array.from({ length: 20 }, (_, i) => ({
+    image: image,
+    title: `Image ${i + 1}`
+  }))
+);
 
 const activeTab = ref('first10');
 const carouselRef = ref(null);
-
-// Dynamic key for carousel
 const carouselKey = ref(0);
 
-// Computed property for filtered items
 const filteredItems = computed(() => {
   if (activeTab.value === 'first10') {
     return items.value.slice(0, 10);
   } else if (activeTab.value === 'next10') {
     return items.value.slice(10);
-  } else if (activeTab.value === 'all') {
-    return items.value; // Return all items
+  } else {
+    return items.value;
   }
-  return [];
 });
 
+const responsiveOptions = ref([
+  {
+    breakpoint: '1400px',
+    numVisible: 3,
+    numScroll: 1,
+  },
+  {
+    breakpoint: '1199px',
+    numVisible: 3,
+    numScroll: 1,
+  },
+  {
+    breakpoint: '991px',
+    numVisible: 2,
+    numScroll: 1,
+  },
+  {
+    breakpoint: '767px',
+    numVisible: 1,
+    numScroll: 1,
+  },
+]);
 
-// Function to switch tabs and reset the carousel
+const currentPage = ref(1);
+const totalPages = computed(() => {
+  return Math.ceil(filteredItems.value.length / 1); // because numScroll = 1
+});
+
+const next = () => {
+  carouselRef.value?.navForward();
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+
+const prev = () => {
+  carouselRef.value?.navBackward();
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
+
 const setActiveTab = (tab) => {
   activeTab.value = tab;
-
-  // Increment carouselKey to force a re-render
   carouselKey.value += 1;
+  currentPage.value = 1;
 };
 
-// Function to handle image click (optional functionality for the example)
-const selectCover = (title) => {
-  console.log(`Image titled "${title}" selected`);
-};
+watch(activeTab, () => {
+  currentPage.value = 1;
+});
+
+onMounted(() => {
+  currentPage.value = 1;
+});
 </script>
+
+<style scoped>
+.custom-carousel .p-carousel-content {
+  padding: 0;
+}
+
+.custom-carousel .p-carousel-container {
+  margin-bottom: 2rem;
+}
+</style>
