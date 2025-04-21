@@ -29,7 +29,7 @@
       :numVisible="5"
       :numScroll="1"
       :circular="false"
-      style="max-width:80vw; width: 80vw;"
+      style="max-width:80vw; width: 80vw; margin: 0 auto;"
       :show-indicators="false"
       ref="carouselRef"
       :key="carouselKey"
