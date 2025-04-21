@@ -48,8 +48,8 @@
                 class="w-full h-[200px] object-cover"
               />
               <div class="p-4">
-                <h3 class="font-bold mb-2">Titel</h3>
-                <p class="text-gray-700">Hier kan de beschrijving komen</p>
+                <h3 class="font-bold mb-2">title</h3>
+                <p class="text-gray-700">This component is just for demo</p>
               </div>
             </div>
           </div>
